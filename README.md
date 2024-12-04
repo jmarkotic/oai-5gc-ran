@@ -91,17 +91,17 @@ In this specific setup all 5gc components will run on single cluster (since 5gc 
 
 RAN components will be split betwen multiple clusters. For simplicity and constrained lab resources, i balanced between ahving different nodepools for workload on single cluster
 
-!\[CaaS setup\](/images/2-CaaS-setup.jpg)
+![CaaS setup](/images/2-CaaS-setup.jpg)
 
 Following addons are added on all clusters:
 
-!\[CaaS addons\](/images/3-CaaS-addons.jpg)
+![CaaS addons](/images/3-CaaS-addons.jpg)
 
 All clusters are having labels set to define which workload should run on it (and later used with nodeSelector option inhelm files).
 
 Example for ran1 cluster which should run CU components (cu-cp, cu-up).
 
-!\[CaaS labels\](/images/4-CaaS-labels.jpg)
+![CaaS labels](/images/4-CaaS-labels.jpg)
 
 Labels will be set per clusters / nodepools:
 
@@ -113,21 +113,21 @@ Labels will be set per clusters / nodepools:
 
 Instantiate OAI 5gc instance from prepared oai5gc csar.
 
-!\[CNF 5GC\](/images/5.1-cnf-5gc.jpg)
+![CNF 5GC](/images/5.1-cnf-5gc.jpg)
 
 Make sure that helm validiation is either not run on just ignore failures
 
 Failure is coming from secret which is optionally used to log into public docker hub. This can be encoded in csar
 
-!\[CNF 5GC\](/images/5.2-cnf-5gc.jpg)
+![CNF 5GC](/images/5.2-cnf-5gc.jpg)
 
-!\[CNF 5GC\](/images/5.3-cnf-5gc.jpg)
+![CNF 5GC](/images/5.3-cnf-5gc.jpg)
 
 Values file provide many options to finutune setup. prepared helm values\_oai5gc.yaml reflects my specific lab.
 
 Ie one can pick and choose ip addresses and interfaces to be used.
 
-!\[CNF 5GC\](/images/5.4-cnf-5gc.jpg)
+![CNF 5GC](/images/5.4-cnf-5gc.jpg)
 
 Notes:
 
@@ -295,7 +295,7 @@ AMF is key component and need sto be verified for proper function:
 
 components will be installed in split model, where we have CU-CP (CU Control Plane) and CU-UP (CU user plane) and DU (Distributed Unit) communicating between via F1 and E1 interfaces.
 
-!\[O-RAN interfaces\](/images/6-oran-intf.jpg)
+![O-RAN interfaces](/images/6-oran-intf.jpg)
 
 I will be using separate cluster to host CU components (ie CU hosted in regional DC, core beign hosted in central DC). This can eihter be separate cluster per CU-CP and CU-UP, or as in this. case, I will be using dedicated nodepools for each.
 
@@ -319,23 +319,23 @@ We will be instantiating cu-cp instance on ran1 cluster, on np1 nodepool.
 
 Image 7.1 oran cucp
 
-!\[CU-CP instantiate\](/images/7.1-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.1-oran-cucp.jpg)
 
 \-currently we are selecting np1 nodepool for selection. Later we will make sure that cu-cp pode lands on that exact nodepool.
 
-!\[CU-CP instantiate\](/images/7.2-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.2-oran-cucp.jpg)
 
 Again, disable helm verification or just ignore them (can this be confgiured as default per csar as default option ?)
 
-!\[CU-CP instantiate\](/images/7.3-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.3-oran-cucp.jpg)
 
 In order to provide max isolation of all resources, we will be using both different nodepools and different namespaces.
 
-!\[CU-CP instantiate\](/images/7.4-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.4-oran-cucp.jpg)
 
-!\[CU-CP instantiate\](/images/7.5-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.5-oran-cucp.jpg)
 
-!\[CU-CP instantiate\](/images/7.6-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.6-oran-cucp.jpg)
 
 CU-CP helm values file values\_gnb\_cu-cp.yaml is provided and that one reflect this specific setup. One can finetune setup by changing proivided values.yaml file
 
@@ -343,7 +343,7 @@ In values yaml file, node selector is used to land pod on nodepool np1 by select
 
 Start cu-cp instantiation:
 
-!\[CU-CP instantiate\](/images/7.7-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.7-oran-cucp.jpg)
 
 Before starting instantiation of cu-cp, we will prepare network traffic capture on amf, specifically on tcpdump sidecar when monitoring is enabled (tcpdump sidecar pod can be enabled via helm values, for most of pods).
 
@@ -355,7 +355,7 @@ Before starting instantiation of cu-cp, we will prepare network traffic capture 
 # tcpdump -i any -n -s1520 -w /tmp/amf-cucp-start.pcap
 ```
 
-!\[CU-CP instantiate\](/images/7.8-oran-cucp.jpg)
+![CU-CP instantiate](/images/7.8-oran-cucp.jpg)
 
 ### cu-cp verification
 
@@ -377,7 +377,7 @@ Fetch pcap file for verification on laptop.
 ❯ kubectl cp -n oai  -c tcpdump oai-amf-8498bdb5d8-k2dlh:/tmp/amf-cucp-start.pcap amf-cucp-start.pcap
 ```
 
-!\[CU-CP traffic\](/images/8-oran-cucp-pcap.jpg)
+![CU-CP traffic](/images/8-oran-cucp-pcap.jpg)
 
 AMF should show in logs that cu-cp registered.
 
@@ -489,7 +489,7 @@ Traffic on cu-cp:
 ❯ Wireshark cucp-cuup-start.pcap&
 ```
 
-!\[CU-UP traffic\](/images/9-oran-cuup-pcap.jpg)
+![CU-UP traffic](/images/9-oran-cuup-pcap.jpg)
 
 ## DU setup (Distributed Unit of gNB)
 
@@ -565,7 +565,7 @@ We will be using combination of tcpdumo for traffic capture and also collecting 
 
 Image 10-oran-du
 
-!\[DU traffic\](/images/10-oran-du-pcap.jpg)
+![DU traffic](/images/10-oran-du-pcap.jpg)
 
 \-check du logs after du is up:
 
@@ -748,7 +748,7 @@ Wireshard decode of traffic from cu-cp:
 ❯ kubectl cp -n oai -c tcpdump oai-gnb-cu-cp-6cf98d85d5-x5wn5:/tmp/cucp-ue-start.pcap cucp-ue-start.pcap
 ```
 
-!\[UE traffic\](/images/11-oran-ue-pcap.jpg)
+![UE traffic](/images/11-oran-ue-pcap.jpg)
 
 Veriify pods:
 
@@ -843,11 +843,11 @@ PING 8.8.8.8 (8.8.8.8) from 12.1.1.100 oaitun_ue1: 56(84) bytes of data.
 
 \-GTP-U between CU-UP/gNB and 5GC UPF:
 
-!\[GTP traffic\](/images/12.1-oran-gtp-pcap.jpg)
+![GTP traffic\(/images/12.1-oran-gtp-pcap.jpg)
 
 \-gtp traffic between DU and CU-UP:
 
-!\[GTP traffic\](/images/12.2-oran-gtp-pcap.jpg)
+![GTP traffic](/images/12.2-oran-gtp-pcap.jpg)
 
 **Fronthual traffic (between UE/RU and DU)**
 
@@ -969,7 +969,7 @@ All clusters/pods in running sttaus
 
 EU generating traffic over RAN, 5GC to Internet and back (ping)
 
-!\[Final test\](/images/13-terminal-final.jpg)
+![Final test](/images/13-terminal-final.jpg)
 
 # TODO
 
