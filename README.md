@@ -46,7 +46,7 @@ Notes:
 *   Most networks (N2, N3, E1, F1, ...) are having all IPs directly reachable (all on same L3/segment) so that specific routes are not needed inside pod
 *   All host interface are added via csar as vmxnet3 interface, but can be easily adopted to sr-iov if required (by editing csar and modifying network-attachment-definition file). Sr-ipv connection woule make sense on DU side and optionally on CU-UP and UPF (both carry userplane traffic). 
 
-!\[Network Diagram\](/images/1-network-diagram.jpg)
+![Network Diagram](/images/1-network-diagram.jpg)
 
 Figure: Network Diagram
 
