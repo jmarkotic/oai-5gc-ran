@@ -1,8 +1,9 @@
-# Project description
+# OpenAirInterface 5GC / O-RAN 
 
-Deploy e2e lab with 5GC SA and O-RAN in split mode.
+## Project description
+Deploy e2e lab with 5GC SA and O-RAN in split mode in multi-cluster K8s environment.
+Project is WIP and will be expanded with more compex scenarios (Networrkm Slicing, non-RT/near-RT RIC use cases, etc).
 
-Project is WIP.
 
 ## Project scope
 
@@ -17,18 +18,19 @@ Objectives for project:
 ## Components used in lab:
 
 *   TCA 2.3.0 and accompanied TKG
-*   vRO 8.1
 *   Harbor 2.x
-*   OpenAirIinterface (OAI) 5GC 1.5.1
+*   OpenAirIinterface (OAI) 5GC 1.5 (upgraded to 2.1.0) 
 *   OpenAirInterface (OAI) O-RAN components (CU-CU, CU-UP, DU, NR UE)
 
 Note: It was planned to use open5gs as 5GC SA, but there were certian issues when connecting OAI NR-UE to open5gs core (OAI NR-UE sends some non-cleartext IEs in Registration Request as cleartext, which is rejected by open5gs, Still investigated).
+
 
 ## Helm charts and CSAR repository
 
 Helm charts, csar and yaml manifests can be found at:
 
 [https://github.com/jmarkotic/oai-5gc-ran](https://github.com/jmarkotic/oai-5gc-ran)
+
 
 # Network setup
 
