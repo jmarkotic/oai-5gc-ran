@@ -34,7 +34,7 @@ Objectives for project:
 ## Project notes
 
 **VMware TCP vs any other CaaS**
-Although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy K8s clusters and applications, document and repository artifacts can be used on any other K8s cluster. TCA reconfigure cluster per application requirements and definitions (Dynamic Infrastructure Policy). That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages, addons (i.e. multus CNI, prometheus, grafana, CSI, security policies and many more. As long as those requiremets are configured in any other way, setup should work.
+Although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy K8s clusters and applications, document and repository artifacts can be used on any other K8s cluster. TCA reconfigure cluster per application requirements and definitions (Dynamic Infrastructure Policy). That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages, addons (i.e. multus CNI, prometheus, grafana, CSI), realtime vs non-realtime kernel, security policies and many more. As long as those requiremets are configured in any other way, setup should work.
 
 **CSAR and/or Helm charts**  
 TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCA is using helm tool to deploy referenced helm charts. In same way one can use helm manually (or via gitops) with accompaned values.yaml files (both helm charts and values found on git repo).
