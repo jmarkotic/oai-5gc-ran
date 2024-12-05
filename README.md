@@ -800,7 +800,7 @@ All clusters/pods in running sttaus
 
 EU generating traffic over RAN, 5GC to Internet and back (ping)
 
-![Final test](/images/13-terminal-final.jpg)
+![Final test](/images/13-terminal-allscreens.jpg)
 
 # TODO
 
