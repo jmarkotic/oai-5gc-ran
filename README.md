@@ -1,4 +1,4 @@
-# OpenAirInterface 5GC / O-RAN
+# OpenAirInterface 5GC SA / O-RAN lab
 
 ## Project description
 
@@ -34,18 +34,15 @@ Objectives for project:
 ## Project notes
 
 **VMware TCP vs any other CaaS**
-
-Although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy K8s clusters and applications, document and repository artifacts can be used on any other K8s cluster. TCA does Dynamic Infrastructure Polict (DIP) settings on cluster prior to dpeloying workload. That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages (i.e. multus CNI, ) and many more. As long as those requiremets are met in any other way, setup should work.
+Although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy K8s clusters and applications, document and repository artifacts can be used on any other K8s cluster. TCA reconfigure cluster per application requirements and definitions (Dynamic Infrastructure Policy). That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages, addons (i.e. multus CNI, prometheus, grafana, CSI, security policies and many more. As long as those requiremets are configured in any other way, setup should work.
 
 **CSAR and/or Helm charts**  
-TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCA is using helm to deploy defined helm charts. In same way one can use helm manually (or via gitops) with accompaned values.yaml files.
+TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCA is using helm tool to deploy referenced helm charts. In same way one can use helm manually (or via gitops) with accompaned values.yaml files (both helm charts and values found on git repo).
 
 **Docker images**
-
 I built my own docker images for OAI O-RAN components (CU-CP, CU-UP, DU, UE) for different reasons - one being to avoid certain bugs present in that particular version (wrong IP/SCTP bindings for CU-UP and DU) and to also include additional modules and functions (like RAN protocols analysis), which are not indluded in provided images. Dockerfiles are provided.
 
 # Network setup
-
 Network model is balancing between flexibility (leveraging real multus network interfaces which enable us to run workload on multiple K8s clusters) and simplicity.
 
 Most of the interfaces are mapped to same portgroups/VLANs  (only portgroup vlan 10 and 11 are used). When different network elements are communicating, communication is mostly contained within same vlan, so that routing is fairly simple on pod side, (so I don't need to add specific routes in pods, when multus interface is attached. When specific routes needs to be added on pods, one must be careful not to interfere with default route (via eth0). in some cases service discovery would not work properly.
