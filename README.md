@@ -1,42 +1,48 @@
-# OpenAirInterface 5GC / O-RAN 
+# OpenAirInterface 5GC / O-RAN
 
 ## Project description
-Deploy e2e lab with 5GC SA and O-RAN in split mode in multi-cluster K8s environment.
-Project is WIP and will be expanded with more compex scenarios (Networrkm Slicing, non-RT/near-RT RIC use cases, etc).
 
-Note: It was planned to use open5gs as 5GC SA, but there were certian issues when connecting OAI NR-UE to open5gs core (OAI NR-UE sends some non-cleartext IEs in Registration Request as cleartext, which is rejected by open5gs, Still investigated).
+Deploy e2e lab with cloud native standalone 5GC and O-RAN com ponents in multi-cluster K8s environment to be able to simulate some real production system. Lab setup can be used to inspect protocols used between different components.  
+Project is WIP and will be expanded with more compex scenarios (Network Slicing, non-RT/near-RT RIC use cases, etc).
 
+Note: It was planned to use open5gs as 5GC (as this was intial 5GC used for lab), but there were certian issues when connecting OAI NR-UE to open5gs core (OAI NR-UE sends some non-cleartext IEs in Registration Request as cleartext, which is rejected by open5gs, to be further investigated).
+
+## Git repository
+
+All artifacts (like Helm charts, accompanied manifests, CSAR files) can be found at:
+
+[https://github.com/jmarkotic/oai-5gc-ran](https://github.com/jmarkotic/oai-5gc-ran)
 
 ## Project scope
 
 Objectives for project:
 
-*   Deploy o-ran components in different O-RAN deployment models
-*   deploy similar network conditions as used in production networks (multiple netowrk interfaces to support highspeec/low latency traffic)
-*   use SR-IOV, DPDK, multus
-*   upgrade with additional scenarios like network slicing and RIC use cases
-*   etc.
+*   Deploy components on multiple K8s clusters (simulate DC, regional DC, near/far-edge sites)
+*   Deploy O-RAN components in different O-RAN deployment models (gNB vs decoupled gNB with CU/DU)
+*   Simulate network conditions as would be used in productio network (separate management, signaling, userplane traffic with multus interfaces, use SR-IOV for lowlatency requirements etc). DPDK was used.
+*   Be able to record all network traffic (signaling, userplane) between all components in 5GC and O-RAN
+*   as lab setup to build for more comples scenaris (i.e. use Network Slicing to slice 5GC into private 5G slices, add RIC platform/apps for RAN intelligence), etc
 
 ## Components used in lab:
 
-*   TCA 2.3.0 and accompanied TKG
-*   Harbor 2.x
-*   OpenAirIinterface (OAI) 5GC 1.5 (upgraded to 2.1.0) 
-*   OpenAirInterface (OAI) O-RAN components (CU-CU, CU-UP, DU, NR UE)
+*   Telco Cloud Platform to manage infrastructure and CaaS layer
+*   Telco Cloud Autionamtion (TCA 2.3.0) to automate CaaS and workloads deployment
+*   Harbor 2.x as registry to host helm charts and docker images
+*   OpenAirIinterface (OAI) 5GC 1.5 (upgraded to 2.1.0)
+*   OpenAirInterface (OAI) 5G RAN components (CU-CU, CU-UP, DU, NR UE)
 
-Note: although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy cluster and applications, document and repository artifacts can be used on any other cluster. TCA does Dynamic Infrastructure Polict (DIP) settings on cluster prior to dpeloying workload. That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages (i.e. multus CNI, ) and many more. As long as those requiremets are met in any other way, setup should work.
-TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCSA will use helm to deploy defined helm charts. In same way one can use helm manually with accompaned values.yaml files.
+## Project notes
 
-I built my own docker images for OAI O-RAN components (CU-CP, CU-UP, DU, UE) for different reasons - one being to avoid certain bugs present in that particular version (wrong IP/SCTP bindings for CU-UP and DU) and to also include additional modules and functions (like RAN protocols analysis), which are not indluded in provided images.
-Dockerfiles are provided.
+**VMware TCP vs any other CaaS**
 
+Although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy K8s clusters and applications, document and repository artifacts can be used on any other K8s cluster. TCA does Dynamic Infrastructure Polict (DIP) settings on cluster prior to dpeloying workload. That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages (i.e. multus CNI, ) and many more. As long as those requiremets are met in any other way, setup should work.
 
-## Helm charts and CSAR repository
+**CSAR and/or Helm charts**  
+TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCA is using helm to deploy defined helm charts. In same way one can use helm manually (or via gitops) with accompaned values.yaml files.
 
-Helm charts, csar and yaml manifests can be found at:
+**Docker images**
 
-[https://github.com/jmarkotic/oai-5gc-ran](https://github.com/jmarkotic/oai-5gc-ran)
-
+I built my own docker images for OAI O-RAN components (CU-CP, CU-UP, DU, UE) for different reasons - one being to avoid certain bugs present in that particular version (wrong IP/SCTP bindings for CU-UP and DU) and to also include additional modules and functions (like RAN protocols analysis), which are not indluded in provided images. Dockerfiles are provided.
 
 # Network setup
 
@@ -52,7 +58,7 @@ Notes:
 *   Most of the communication between 5gc and RAN elements is using multus interfaces (AMF and CU-CP N2, UPF and CU-UP N3 network, F1/F1C, F1U, E2 between CU and DU, ...)
 *   I am connecting most of those network interfaces instantiated via late binding to same portgroup (attached to vlan 11, or vlan 10). But each network is using its own network subnet, simulating more complex networking
 *   Most networks (N2, N3, E1, F1, ...) are having all IPs directly reachable (all on same L3/segment) so that specific routes are not needed inside pod
-*   All host interface are added via csar as vmxnet3 interface, but can be easily adopted to sr-iov if required (by editing csar and modifying network-attachment-definition file). Sr-ipv connection woule make sense on DU side and optionally on CU-UP and UPF (both carry userplane traffic). 
+*   All host interface are added via csar as vmxnet3 interface, but can be easily adopted to sr-iov if required (by editing csar and modifying network-attachment-definition file). Sr-ipv connection woule make sense on DU side and optionally on CU-UP and UPF (both carry userplane traffic).
 
 ![Network Diagram](/images/1-net-diag.jpg)
 
@@ -228,7 +234,6 @@ AMF is key component and need sto be verified for proper function:
     inet 172.16.11.21/24 brd 172.16.11.255 scope global n2
        valid_lft forever preferred_lft forever
     inet6 fe80::f815:b1ff:fe86:affd/64 scope link
-
 ```
 
 \-check also for upf pod for n3 interface::
@@ -252,7 +257,7 @@ AMF is key component and need sto be verified for proper function:
        valid_lft forever preferred_lft forever
 ```
 
-**This means 5gc is running correctly.** 
+**This means 5gc is running correctly.**
 
 # OAI O-RAN components install
 
@@ -412,7 +417,7 @@ We want primarily to take logs and traffic on cu-cp, and perhaps logs on upf pod
 ❯ k logs -f -n oai -c spgwu pod/oai-spgwu-tiny-7c44746c4d-rxfwf
 ```
 
-### Verify cu-up 
+### Verify cu-up
 
 Verify cu-up running on nodepool np2 in namespace oai2:
 
@@ -799,7 +804,6 @@ UE 4938: LCID 4: 148464 bytes RX
 30984.566771 [NR_PHY] I ============================================
 30984.566809 [NR_PHY] I Harq round stats for Downlink: 24501/0/0
 30984.566819 [NR_PHY] I ============================================
-
 ```
 
 All clusters/pods in running sttaus
