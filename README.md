@@ -4,6 +4,8 @@
 Deploy e2e lab with 5GC SA and O-RAN in split mode in multi-cluster K8s environment.
 Project is WIP and will be expanded with more compex scenarios (Networrkm Slicing, non-RT/near-RT RIC use cases, etc).
 
+Note: It was planned to use open5gs as 5GC SA, but there were certian issues when connecting OAI NR-UE to open5gs core (OAI NR-UE sends some non-cleartext IEs in Registration Request as cleartext, which is rejected by open5gs, Still investigated).
+
 
 ## Project scope
 
@@ -22,7 +24,11 @@ Objectives for project:
 *   OpenAirIinterface (OAI) 5GC 1.5 (upgraded to 2.1.0) 
 *   OpenAirInterface (OAI) O-RAN components (CU-CU, CU-UP, DU, NR UE)
 
-Note: It was planned to use open5gs as 5GC SA, but there were certian issues when connecting OAI NR-UE to open5gs core (OAI NR-UE sends some non-cleartext IEs in Registration Request as cleartext, which is rejected by open5gs, Still investigated).
+Note: although VMware Telco Cloud Platform (and Telco Cloud Automation) is used to deploy cluster and applications, document and repository artifacts can be used on any other cluster. TCA does Dynamic Infrastructure Polict (DIP) settings on cluster prior to dpeloying workload. That means setting up all infrastructure requirements - like adding host network interfaces (and/or SR-IOV, vmxnet3, ...), adding sw packages (i.e. multus CNI, ) and many more. As long as those requiremets are met in any other way, setup should work.
+TCA use CSAR model to deploy application (meaning both infrastructure and application definitions are coded in CSAR) which makes it easy way to deploy application and handle infrastructure in tightly coupled way. Under the hood, TCSA will use helm to deploy defined helm charts. In same way one can use helm manually with accompaned values.yaml files.
+
+I built my own docker images for OAI O-RAN components (CU-CP, CU-UP, DU, UE) for different reasons - one being to avoid certain bugs present in that particular version (wrong IP/SCTP bindings for CU-UP and DU) and to also include additional modules and functions (like RAN protocols analysis), which are not indluded in provided images.
+Dockerfiles are provided.
 
 
 ## Helm charts and CSAR repository
