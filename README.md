@@ -721,7 +721,7 @@ PING 8.8.8.8 (8.8.8.8) from 12.1.1.100 oaitun_ue1: 56(84) bytes of data.
 
 \-GTP-U between CU-UP/gNB and 5GC UPF:
 
-![GTP traffic\(/images/12.1-oran-gtp-pcap.jpg)
+![GTP traffic](/images/12.1-oran-gtp-pcap.jpg)
 
 \-gtp traffic between DU and CU-UP:
 
